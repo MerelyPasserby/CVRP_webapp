@@ -12,7 +12,7 @@ namespace CVRPlib.Tests
         {
             //Arrange
             List<string> lines = new();
-            using (var stream = new StreamReader(@"C:\Users\User\Desktop\Уник\М1к1с\Евристика\Лб\InputData\test.txt"))
+            using (var stream = new StreamReader(@"C:\Users\User\Desktop\Уник\М1к1с\Евристика\Лб\InputData\CVRPlib\test.txt"))
             {
                 lines = stream.ReadToEnd().Split('\n').ToList();
             }
@@ -32,7 +32,7 @@ namespace CVRPlib.Tests
         {
             //Arrange
             List<string> lines = new();
-            using (var stream = new StreamReader(@"C:\Users\User\Desktop\Уник\М1к1с\Евристика\Лб\InputData\test.txt"))
+            using (var stream = new StreamReader(@"C:\Users\User\Desktop\Уник\М1к1с\Евристика\Лб\InputData\CVRPlib\test.txt"))
             {
                 lines = stream.ReadToEnd().Split('\n').ToList();
             }

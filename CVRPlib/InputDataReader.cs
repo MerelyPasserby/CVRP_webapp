@@ -78,10 +78,7 @@ namespace CVRPlib
                         while (input[i].Trim() != "DEPOT_SECTION")
                         {
                             parts = input[i].Trim().Split(' ');
-
-                            //var a = apps.Find(a => a.Id == Convert.ToInt32(parts[0]));
-                            //a.Demand = Convert.ToDouble(parts[1]);
-
+                        
                             demands.Add(Convert.ToDouble(parts[1]));
 
                             i++;
