@@ -23,6 +23,7 @@ namespace CVRPlib.Tests
             Assert.That(data.Name, Is.EqualTo("A-n32-k5"));
             Assert.That(data.DistanceMatrix, Is.Not.Null);
             Assert.That(data.DistanceMatrix[0,0], Is.EqualTo(0));
+            Assert.That(data.MaxCarCount, Is.EqualTo(12));
         }
     }
 }

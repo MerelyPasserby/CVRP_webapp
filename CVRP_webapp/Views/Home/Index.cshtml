@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="module" src="~/js/home.js" asp-append-version="true"></script>
+}

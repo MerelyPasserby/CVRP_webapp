@@ -1,5 +1,5 @@
 <Solution>
   <Project Path="CVRPlib.Tests/CVRPlib.Tests.csproj" Id="f0a3f932-f7ab-4663-b0a9-5962a880ea66" />
   <Project Path="CVRPlib/CVRPlib.csproj" Id="4b6f89da-246f-47f4-9510-a288f1a30021" />
-  <Project Path="CVRP_webapp/CVRP_webapp.csproj" />
+  <Project Path="CVRP_webapp/CVRP_webapp.csproj" Id="be999d3d-cb60-47ed-949f-cc9d1ee0ac92" />
 </Solution>

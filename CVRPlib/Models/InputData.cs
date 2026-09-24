@@ -7,7 +7,7 @@
         public string Type { get; init; } = null!;
         public int Dimension { get; init; }
         public DistanceFunction DistanceFunction { get; init; }
-        public int CarCount { get; init; }
+        public int MaxCarCount { get; init; }
         public double Capacity { get; init; }
         public List<Application> Applications { get; init; } = new List<Application>();
         public int DepotId { get; init; }

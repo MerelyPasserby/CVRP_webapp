@@ -57,9 +57,70 @@ namespace CVRPlib
             };
         }
 
-        Solution GenerateInitialSolution(InputData data)
+        static Solution GenerateInitialSolution(InputData data)
         {
-            throw new NotImplementedException();
+            List<Application> applications = data.Applications.ToList();
+            double overalDemand = data.Applications.Sum(a => a.Demand);
+            int minCarsNeeded = (int)(overalDemand / data.Capacity) + 1;
+
+            minCarsNeeded = Math.Min(minCarsNeeded, data.MaxCarCount);
+
+            Solution solution = new Solution() { Routes = new List<List<Application>>(minCarsNeeded * 2)};
+
+            var shuffled = applications.Shuffle().ToList();
+            int j = 0;
+
+            Application depot = applications.Find(a => a.Id == data.DepotId) ?? data.Applications[0];
+            shuffled.Remove(depot);
+
+            for(int i = 0; i < minCarsNeeded; i++)
+            {
+                solution.Routes.Add(new List<Application>());
+                solution.Routes[i].Add(depot);
+                double currentCapacity = 0;
+
+                while (currentCapacity < data.Capacity)
+                {
+                    if(j >= shuffled.Count)
+                    {
+                        break;
+                    }
+
+                    solution.Routes[i].Add(shuffled[j]);
+                    currentCapacity += shuffled[j].Demand;
+                    j++;
+                }
+
+                solution.Routes[i].Add(depot);
+            }
+
+            while(j < shuffled.Count)
+            {
+                solution.Routes.Add(new List<Application>());
+                solution.Routes[^1].Add(depot);
+                double currentCapacity = 0;
+
+                while (currentCapacity < data.Capacity)
+                {
+                    if (j >= shuffled.Count)
+                    {
+                        break;
+                    }
+
+                    solution.Routes[^1].Add(shuffled[j]);
+                    currentCapacity += shuffled[j].Demand;
+                    j++;
+                }
+
+                solution.Routes[^1].Add(depot);
+            }
+
+            if(solution.Routes.Count > data.MaxCarCount)
+            {
+                solution = GenerateInitialSolution(data);
+            }
+
+            return solution;
         }
 
         public Solution Solve(InputData data, ITargetFunction targetFunction)

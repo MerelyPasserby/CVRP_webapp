@@ -17,6 +17,7 @@ namespace CVRPlib
             IDistanceFunction d = null;
             string name = "";
             string comment = "";
+            int maxCarCount = 0;
             string type = "";
             int dim = 0;
             DistanceFunction dist = DistanceFunction.EUC_2D;
@@ -36,7 +37,10 @@ namespace CVRPlib
                         i++;
                         break;
                     case "COMMENT":
-                        comment = parts[^1];
+                        int ind = parts.ToList().FindIndex(part => part.Contains("trucks:"));
+                        string value = parts[ind + 1].Trim('.', ',', ';');
+                        maxCarCount = (Convert.ToInt32(value) + 1) * 2;
+                        comment = line;
                         i++;
                         break;
                     case "TYPE":
@@ -113,7 +117,8 @@ namespace CVRPlib
             }
 
             return new InputData() { Name = name, 
-                                     Comment = comment, 
+                                     Comment = comment,
+                                     MaxCarCount = maxCarCount,
                                      Type = type, 
                                      Dimension = dim, 
                                      DistanceFunction = dist, 
