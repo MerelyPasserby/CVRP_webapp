@@ -11,6 +11,7 @@ namespace CVRPlib
         public double Evaluate(Solution solution, InputData data)
         {
             double capacity = 0.0;
+            double penalty = 0.0;
 
             foreach(var route in solution.Routes)
             {
@@ -19,7 +20,7 @@ namespace CVRPlib
                     capacity += route[i].Demand;
                     if (capacity > data.Capacity)
                     {
-                        return double.MaxValue;
+                        penalty += (capacity - data.Capacity) * 1000;
                     }
                 }
                 capacity = 0;
@@ -42,7 +43,7 @@ namespace CVRPlib
                 
             }
             
-            return target;
+            return target + penalty;
         }
     }
 }

@@ -2,11 +2,34 @@
     ViewData["Title"] = "Home";
 }
 
+<div class="vertical">
+    <div class="vertical block">
+        <label>Add file<input type="file" id="file_upload" /></label>        
+    
+        <label>Multistart count <input type="text" id="multistart_upload" /></label>      
+    
+        <input type="button" value="Send" id="upload_button"/>
+    </div>
 
+    <div class="block" id="info">
+        <p>Best: <span id="best-value">—</span></p>
+        <p>Worst: <span id="worst-value">—</span></p>
+        <p>Difference: <span id="difference-value">—</span></p>
+    </div>
+
+    <div class="map-container block" id="graph">
+    </div>
+
+    <div class ="map-container block" id="gist">
+    </div>
+
+    <div class="map-container block" id="zbig">
+    </div>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script type="module" src="~/js/home.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/index.js" asp-append-version="true"></script>
 }

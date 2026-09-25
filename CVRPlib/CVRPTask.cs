@@ -21,15 +21,15 @@ namespace CVRPlib
             _targetFunction = targetFunction;
         }
 
-        public List<(Solution sol, double fValue)> GetSolution(int multistartCount = 1)
+        public List<SolutionResult> GetSolution(int multistartCount = 1)
         {
-            List<(Solution res, double fValue)> res = new List<(Solution res, double fValue)> ();
+            List<SolutionResult> res = new List<SolutionResult> ();
 
             for (int i = 0; i < multistartCount; i++)
             {             
                 Solution solution = _solver.Solve(_data, _targetFunction);
                 double solutionFValue = _targetFunction.Evaluate(solution, _data);
-                res.Add((solution, solutionFValue));
+                res.Add(new SolutionResult() { Solution = solution, FValue = solutionFValue });
             }
 
             return res;
