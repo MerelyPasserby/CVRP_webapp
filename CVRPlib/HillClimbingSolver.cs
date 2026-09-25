@@ -27,7 +27,7 @@ namespace CVRPlib
 
                 for(int i = firstClientInd;  i < lastClientInd; i++)
                 {
-                    for(int j = firstClientInd + 1; j < lastClientInd + 1; j++)
+                    for(int j = i + 1; j < lastClientInd + 1; j++)
                     {
                         var newSolution = CloneSolution(sol);
                         var newRoute = newSolution.Routes[r];
@@ -129,6 +129,14 @@ namespace CVRPlib
 
             Solution best = Outer(initial, targetFunction, data);
 
+            foreach(var route in best.Routes)
+            {
+                if (route.Count == 2)
+                {
+                    best.Routes.Remove(route);
+                }
+            }
+
             return best;           
         }
 
@@ -162,7 +170,7 @@ namespace CVRPlib
                                     continue;
                                 }
 
-                                List<Application> targetRoute = res.Routes[r1];
+                                List<Application> targetRoute = res.Routes[r2];
                                 int targetLastClientInd = targetRoute.Count - 2;
 
                                 for (int j = firstClientInd; j <= targetLastClientInd + 1; j++)

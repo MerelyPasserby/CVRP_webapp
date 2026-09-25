@@ -16,6 +16,7 @@ public class HomeController : Controller
         return View();
     }
 
+    [HttpPost]
     public async Task<IActionResult> Get([FromForm] IFormFile file, [FromForm] int multistartCount)
     {
         if(file == null || file.Length == 0)
@@ -36,7 +37,7 @@ public class HomeController : Controller
             InputData data = InputDataReader.ParseData(lines);
 
             var task = new CVRPTask(data, new HillClimbingSolver(), new TargetFunctionStrict());
-            var res = await Task.Run(() => task.GetSolution());
+            var res = await Task.Run(() => task.GetSolution(multistartCount));
             return Ok(res);
         }
         catch(Exception ex)
