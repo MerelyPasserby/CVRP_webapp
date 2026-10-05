@@ -1,4 +1,5 @@
-﻿using CVRPlib.Models;
+﻿using CVRPlib.DataReaders;
+using CVRPlib.Models;
 
 namespace CVRPlib.Tests
 {

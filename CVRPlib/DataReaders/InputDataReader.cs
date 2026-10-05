@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Text;
 
-namespace CVRPlib
+namespace CVRPlib.DataReaders
 {
     public class InputDataReader : IInputDataReader
     {

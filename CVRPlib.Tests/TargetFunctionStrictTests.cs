@@ -1,4 +1,5 @@
-﻿using CVRPlib.Models;
+﻿using CVRPlib.DataReaders;
+using CVRPlib.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;

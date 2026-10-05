@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CVRPlib
+namespace CVRPlib.Solvers
 {
     public class HillClimbingSolver : ISolver
     {
