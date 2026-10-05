@@ -7,9 +7,9 @@ using System.Text;
 
 namespace CVRPlib
 {
-    public static class InputDataReader
+    public class InputDataReader : IInputDataReader
     {
-        public static InputData ParseData(List<string> input)
+        public InputData ParseData(List<string> input)
         {
             int i = 0;
             string line = input[0];

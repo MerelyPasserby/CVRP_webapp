@@ -5,10 +5,11 @@
 <div class="vertical">
     <div class="vertical block">
         <label>Add file<input type="file" id="file_upload" /></label>          
-        <label>Multistart count <input type="text" id="multistart_upload" /></label>      
+        <label>Multistart count <input type="text" id="multistart_upload" value="50"/></label>      
+        <label>History count <input type="text" id="history_upload" value="3"/></label>      
         <input type="button" value="Send" id="upload_button"/>
     </div>
-
+    
     <div class="block" id="info">
         <p>Best: <span id="best-value">—</span></p>
         <p>Worst: <span id="worst-value">—</span></p>
@@ -23,7 +24,8 @@
         <canvas id="quality-chart"></canvas>
     </div>
 
-    <div class="map-container block" id="zbig">
+    <div class="map-container block" id="convergence">
+        <canvas id="convergence-chart"></canvas>
     </div>
 
     <div>

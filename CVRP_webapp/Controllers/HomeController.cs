@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using CVRPlib.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
+using CVRPlib.Interfaces;
 
 namespace CVRP_webapp.Controllers;
 
@@ -17,7 +18,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Get([FromForm] IFormFile file, [FromForm] int multistartCount)
+    public async Task<IActionResult> Get([FromForm] IFormFile file, [FromForm] int multistartCount, [FromForm] int historyCount)
     {
         if(file == null || file.Length == 0)
         {
@@ -34,10 +35,11 @@ public class HomeController : Controller
                 lines = tmp.Split("\n").ToList();
             }
 
-            InputData data = InputDataReader.ParseData(lines);
+            IInputDataReader dataReader = new InputDataReader();
+            InputData data = dataReader.ParseData(lines);
 
             var task = new CVRPTask(data, new HillClimbingSolver(), new TargetFunctionStrict());
-            var res = await Task.Run(() => task.GetSolution(multistartCount));
+            var res = await Task.Run(() => task.GetSolution(multistartCount, historyCount));
             return Ok(res);
         }
         catch(Exception ex)

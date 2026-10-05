@@ -19,10 +19,6 @@ function fileUploadinit() {
 }
 
 async function getSolution() {
-  const button = document.querySelector('#save_button')
-  if (!button) return
-  button.disabled = true
-
   const fileInput = document.querySelector('#file_upload')
   if (!fileInput) return
   if (!fileInput.files || fileInput.files.length === 0) {
@@ -39,9 +35,19 @@ async function getSolution() {
     return
   }
 
+  const historyInput = document.querySelector('#history_upload')
+  if (!historyInput) return
+  const historyCount = Number(historyInput.value)
+
+  if (!Number.isInteger(historyCount) || historyCount <= 0) {
+    console.error('Введи коректну кількість історій')
+    return
+  }
+
   const formData = new FormData()
   formData.append('file', fileInput.files[0])
   formData.append('multistartCount', multistartCount)
+  formData.append('historyCount', historyCount)
 
   try {
     const response = await fetch('/Home/Get', {
@@ -54,22 +60,21 @@ async function getSolution() {
     }
 
     const data = await response.json()
-
     console.log(data)
 
     drawSolutionInfo(data)
     drawBestSolution(data)
     saveBestSolution(data)
     drawGistogram(data)
-    drawZbig(data)
+    drawConvergence(data)
   } catch (error) {
     console.error('Помилка:', error)
   }
 }
 
 function drawSolutionInfo(results) {
-  const best = Math.min(...results.map((x) => x.fValue))
-  const worst = Math.max(...results.map((x) => x.fValue))
+  const best = Math.min(...results.solutions.map((x) => x.fValue))
+  const worst = Math.max(...results.solutions.map((x) => x.fValue))
   const difference = worst - best
 
   document.querySelector('#best-value').textContent = best.toFixed(2)
@@ -78,9 +83,10 @@ function drawSolutionInfo(results) {
 }
 
 let solutionChart = null
-
 function drawBestSolution(results) {
-  const best = results.reduce((best, current) => (current.fValue < best.fValue ? current : best))
+  const best = results.solutions.reduce((best, current) =>
+    current.fValue < best.fValue ? current : best,
+  )
 
   const datasets = []
 
@@ -150,7 +156,9 @@ function saveBestSolution(results) {
   button.disabled = false
 
   button.onclick = () => {
-    const best = results.reduce((best, current) => (current.fValue < best.fValue ? current : best))
+    const best = results.solutions.reduce((best, current) =>
+      current.fValue < best.fValue ? current : best,
+    )
 
     const json = JSON.stringify(best, null, 2)
 
@@ -177,9 +185,8 @@ function saveBestSolution(results) {
 }
 
 let qualityChart = null
-
 function drawGistogram(results) {
-  const values = results.map((x) => x.fValue)
+  const values = results.solutions.map((x) => x.fValue)
 
   const n = values.length
 
@@ -187,7 +194,9 @@ function drawGistogram(results) {
     return
   }
 
-  const classCount = Math.ceil(1 + 3.32 * Math.log10(n))
+  let classCount = Math.floor(1 + 3.32 * Math.log10(n))
+  if (classCount < 5) classCount = 5
+  if (classCount % 2 == 0) classCount++
 
   const minValue = Math.min(...values)
   const maxValue = Math.max(...values)
@@ -269,4 +278,65 @@ function drawGistogram(results) {
   })
 }
 
-function drawZbig(results) {}
+let convergenceChart = null
+function drawConvergence(results) {
+  const datasets = results.histories.map((values, index) => ({
+    label: `Запуск ${index + 1}`,
+
+    data: values.map((value, iteration) => ({
+      x: iteration,
+      y: value,
+    })),
+
+    showLine: true,
+    fill: false,
+    tension: 0,
+  }))
+
+  if (convergenceChart) {
+    convergenceChart.destroy()
+  }
+
+  const ctx = document.querySelector('#convergence-chart')
+
+  convergenceChart = new Chart(ctx, {
+    type: 'line',
+
+    data: {
+      datasets: datasets,
+    },
+
+    options: {
+      responsive: true,
+
+      scales: {
+        x: {
+          type: 'linear',
+
+          title: {
+            display: true,
+            text: 'Ітерація',
+          },
+        },
+
+        y: {
+          title: {
+            display: true,
+            text: 'Значення функції якості',
+          },
+        },
+      },
+
+      plugins: {
+        title: {
+          display: true,
+          text: 'Графік збіжності',
+        },
+
+        legend: {
+          display: true,
+        },
+      },
+    },
+  })
+}

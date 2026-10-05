@@ -7,6 +7,7 @@ namespace CVRPlib.Interfaces
 {
     public interface ISolver
     {
+        public event EventHandler<SolutionEventArgs>? OnSolutionImpoved;
         public Solution Solve(InputData data, ITargetFunction targetFunction);
     }
 }

@@ -8,26 +8,31 @@ namespace CVRPlib
 {
     public class HillClimbingSolver : ISolver
     {
+        public event EventHandler<SolutionEventArgs>? OnSolutionImpoved;
+        void Improved(SolutionEventArgs e)
+        {
+            OnSolutionImpoved?.Invoke(this, e);
+        }
         static List<Solution> GetNeigbourhood(Solution sol)
         {
             List<Solution> neigbours = new List<Solution>();
             List<Application> route;
 
-            for(int r = 0; r < sol.Routes.Count; r++)
+            for (int r = 0; r < sol.Routes.Count; r++)
             {
                 route = sol.Routes[r];
 
-                if(route.Count < 4)
+                if (route.Count < 4)
                 {
                     continue;
                 }
 
-                int firstClientInd = 1; //first after depot so 0 + 1
-                int lastClientInd = route.Count - 2; // last before depot, so -1 for it is index and -1 for depot
+                int firstClientInd = 1;
+                int lastClientInd = route.Count - 2;
 
-                for(int i = firstClientInd;  i < lastClientInd; i++)
+                for (int i = firstClientInd; i < lastClientInd; i++)
                 {
-                    for(int j = i + 1; j < lastClientInd + 1; j++)
+                    for (int j = i + 1; j < lastClientInd + 1; j++)
                     {
                         var newSolution = CloneSolution(sol);
                         var newRoute = newSolution.Routes[r];
@@ -41,12 +46,10 @@ namespace CVRPlib
 
             return neigbours;
         }
-
         static void TwoOptSwap(List<Application> route, int startInd, int count)
         {
             route.Reverse(startInd, count);
         }
-
         static Solution CloneSolution(Solution s)
         {
             return new Solution
@@ -56,7 +59,6 @@ namespace CVRPlib
                     .ToList()
             };
         }
-
         static Solution GenerateInitialSolution(InputData data)
         {
             List<Application> applications = data.Applications.ToList();
@@ -139,13 +141,16 @@ namespace CVRPlib
 
             return best;           
         }
-
-        static Solution Outer(Solution initial,  ITargetFunction targetFunction, InputData data)
+        Solution Outer(Solution initial, ITargetFunction targetFunction, InputData data)
         {   
+            Improved(new SolutionEventArgs() { ImprovedFValue = targetFunction.Evaluate(initial, data) });
             var res = HillClimbing(initial, targetFunction, data);
 
-            if(res.Routes.Count > 1)
+            if (res.Routes.Count < 2)
             {
+                return res;
+            }
+
                 bool found = false;
 
                 while (!found)
@@ -158,8 +163,8 @@ namespace CVRPlib
                     for (int r1 = 0; r1 < res.Routes.Count; r1++)
                     {
                         List<Application> sourceRoute = res.Routes[r1];
-                        int firstClientInd = 1; //first after depot so 0 + 1
-                        int lastClientInd = sourceRoute.Count - 2; // last before depot, so -1 for it is index and -1 for depot
+                    int firstClientInd = 1;
+                    int lastClientInd = sourceRoute.Count - 2;
 
                         for (int i = firstClientInd; i <= lastClientInd; i++)
                         {
@@ -200,15 +205,14 @@ namespace CVRPlib
 
                     if (!found)
                     {
+                    Improved(new SolutionEventArgs() { ImprovedFValue = bestFValue });
                         res = HillClimbing(bestSolution, targetFunction, data);
                     }
                 }             
-            }
 
             return res;
         }
-
-        static Solution HillClimbing(Solution initial, ITargetFunction f, InputData data)
+        Solution HillClimbing(Solution initial, ITargetFunction f, InputData data)
         {
             Solution res = initial;
             Solution? best;
@@ -224,6 +228,7 @@ namespace CVRPlib
                 if (best != null && f.Evaluate(best, data) < f.Evaluate(res, data))
                 {
                     res = best;
+                    Improved(new SolutionEventArgs() { ImprovedFValue = f.Evaluate(res, data) });
                 }
                 else
                 {

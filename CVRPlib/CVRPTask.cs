@@ -21,15 +21,29 @@ namespace CVRPlib
             _targetFunction = targetFunction;
         }
 
-        public List<SolutionResult> GetSolution(int multistartCount = 1)
+        public CVRPTaskResult GetSolution(int multistartCount = 1, int historyCount = 0)
         {
-            List<SolutionResult> res = new List<SolutionResult> ();
+            CVRPTaskResult res = new CVRPTaskResult();
+            HillClimbingStatistics stats = new HillClimbingStatistics();
 
             for (int i = 0; i < multistartCount; i++)
-            {             
+            {   
+                if(i < historyCount)
+                {
+                    stats = new HillClimbingStatistics();
+                    _solver.OnSolutionImpoved += stats.AddEntry;
+                }
+                
                 Solution solution = _solver.Solve(_data, _targetFunction);
+
                 double solutionFValue = _targetFunction.Evaluate(solution, _data);
-                res.Add(new SolutionResult() { Solution = solution, FValue = solutionFValue });
+                res.Solutions.Add(new SolutionResult() { Solution = solution, FValue = solutionFValue });
+                
+                if (i < historyCount)
+                {
+                    res.Histories.Add(stats.History);
+                    _solver.OnSolutionImpoved -= stats.AddEntry;
+                }             
             }
 
             return res;
