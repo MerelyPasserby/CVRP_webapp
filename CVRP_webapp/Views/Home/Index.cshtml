@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="vertical">
+    <div class="vertical block">
+        <label>Add file<input type="file" id="file_upload" /></label>          
+        <label>Multistart count <input type="text" id="multistart_upload" value="50"/></label>      
+        <label>History count <input type="text" id="history_upload" value="3"/></label>      
+        <input type="button" value="Send" id="upload_button"/>
+    </div>
+    
+    <div class="block" id="info">
+        <p>Best: <span id="best-value">—</span></p>
+        <p>Worst: <span id="worst-value">—</span></p>
+        <p>Difference: <span id="difference-value">—</span></p>
+    </div>
+
+    <div class="map-container block" id="graph">
+        <canvas id="solution-chart"></canvas>
+    </div>
+
+    <div class ="map-container block" id="gist">
+        <canvas id="quality-chart"></canvas>
+    </div>
+
+    <div class="map-container block" id="convergence">
+        <canvas id="convergence-chart"></canvas>
+    </div>
+
+    <div>
+        <input type="button" value="Зберегти найкраще рішення" id="save_button" disabled />
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="module" src="~/js/index.js" asp-append-version="true"></script>
+}
