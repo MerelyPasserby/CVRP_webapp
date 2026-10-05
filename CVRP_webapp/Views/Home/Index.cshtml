@@ -4,10 +4,8 @@
 
 <div class="vertical">
     <div class="vertical block">
-        <label>Add file<input type="file" id="file_upload" /></label>        
-    
+        <label>Add file<input type="file" id="file_upload" /></label>          
         <label>Multistart count <input type="text" id="multistart_upload" /></label>      
-    
         <input type="button" value="Send" id="upload_button"/>
     </div>
 
@@ -18,12 +16,18 @@
     </div>
 
     <div class="map-container block" id="graph">
+        <canvas id="solution-chart"></canvas>
     </div>
 
     <div class ="map-container block" id="gist">
+        <canvas id="quality-chart"></canvas>
     </div>
 
     <div class="map-container block" id="zbig">
+    </div>
+
+    <div>
+        <input type="button" value="Зберегти найкраще рішення" id="save_button" disabled />
     </div>
 </div>
 
