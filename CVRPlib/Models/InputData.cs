@@ -2,10 +2,6 @@
 {
     public class InputData
     {
-        public string Name { get; init; } = null!;
-        public string Comment { get; init; } = null!;
-        public string Type { get; init; } = null!;
-        public int Dimension { get; init; }
         public DistanceFunction DistanceFunction { get; init; }
         public int MaxCarCount { get; init; }
         public double Capacity { get; init; }

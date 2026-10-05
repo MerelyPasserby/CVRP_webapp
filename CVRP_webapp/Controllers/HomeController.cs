@@ -37,7 +37,17 @@ public class HomeController : Controller
                 lines = tmp.Split("\n").ToList();
             }
 
-            IInputDataReader dataReader = new InputDataReader();
+            IInputDataReader dataReader;
+
+            if (lines[0].Contains("NAME"))
+            {
+                dataReader = new InputDataReader();
+            }
+            else
+            {
+                dataReader = new SolomonInputDataReader();
+            }
+
             InputData data = dataReader.ParseData(lines);
 
             var task = new CVRPTask(data, new HillClimbingSolver(), new TargetFunctionStrict());

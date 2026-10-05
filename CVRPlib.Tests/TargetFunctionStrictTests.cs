@@ -17,9 +17,10 @@ namespace CVRPlib.Tests
             {
                 lines = stream.ReadToEnd().Split('\n').ToList();
             }
-            InputData data = InputDataReader.ParseData(lines);
+            InputData data = new InputDataReader().ParseData(lines);
             Solution solution = new Solution() { Routes = new List<List<Application>> { new List<Application>(data.Applications[0..3]), new List<Application>(data.Applications[3..])  }  };
             TargetFunctionStrict f = new TargetFunctionStrict();
+
             //Act
             double actual = f.Evaluate(solution, data);
 
@@ -37,9 +38,10 @@ namespace CVRPlib.Tests
             {
                 lines = stream.ReadToEnd().Split('\n').ToList();
             }
-            InputData data = InputDataReader.ParseData(lines);
+            InputData data = new InputDataReader().ParseData(lines);
             Solution solution = new Solution() { Routes = new List<List<Application>> { new List<Application>(data.Applications)} };
             TargetFunctionStrict f = new TargetFunctionStrict();
+
             //Act
             double actual = f.Evaluate(solution, data);
 

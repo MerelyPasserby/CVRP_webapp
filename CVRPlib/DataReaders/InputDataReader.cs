@@ -14,12 +14,8 @@ namespace CVRPlib.DataReaders
             int i = 0;
             string line = input[0];
 
-            IDistanceFunction d = null;
-            string name = "";
-            string comment = "";
-            int maxCarCount = 0;
-            string type = "";
-            int dim = 0;
+            IDistanceFunction d = new Euclid2DDistanceFunction();   
+            int maxCarCount = 0; 
             DistanceFunction dist = DistanceFunction.EUC_2D;
             double cap = 0.0;
             List<(int Id, Point Point)> points = new();
@@ -31,26 +27,13 @@ namespace CVRPlib.DataReaders
                 var parts = line.Trim().Split(' ');
 
                 switch (parts[0])
-                {
-                    case "NAME":
-                        name = parts[^1];
-                        i++;
-                        break;
+                {            
                     case "COMMENT":
                         int ind = parts.ToList().FindIndex(part => part.Contains("trucks:"));
                         string value = parts[ind + 1].Trim('.', ',', ';');
                         maxCarCount = (Convert.ToInt32(value) + 1) * 2;
-                        comment = line;
                         i++;
-                        break;
-                    case "TYPE":
-                        type = parts[^1];
-                        i++;
-                        break;
-                    case "DIMENSION":
-                        dim = Convert.ToInt32(parts[^1]);
-                        i++;
-                        break;
+                        break;                    
                     case "EDGE_WEIGHT_TYPE":
                         (dist, d) = parts[^1] switch
                         {
@@ -94,6 +77,9 @@ namespace CVRPlib.DataReaders
                         depotId = Convert.ToInt32(input[i].Trim());
                         i += 2;
                         break;
+                    default:
+                        i++;
+                        break;
                 }
 
                 line = input[i];
@@ -116,16 +102,14 @@ namespace CVRPlib.DataReaders
                 }
             }
 
-            return new InputData() { Name = name, 
-                                     Comment = comment,
-                                     MaxCarCount = maxCarCount,
-                                     Type = type, 
-                                     Dimension = dim, 
-                                     DistanceFunction = dist, 
-                                     Capacity = cap, 
-                                     Applications = applications, 
-                                     DepotId = depotId,
-                                     DistanceMatrix = m };
+            return new InputData() 
+            { 
+                MaxCarCount = maxCarCount,                      
+                DistanceFunction = dist, 
+                Capacity = cap, 
+                Applications = applications, 
+                DepotId = depotId,
+                DistanceMatrix = m };
         }
     }
 }
