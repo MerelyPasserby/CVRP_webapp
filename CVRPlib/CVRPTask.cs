@@ -2,6 +2,7 @@
 using CVRPlib.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace CVRPlib
@@ -26,6 +27,9 @@ namespace CVRPlib
             CVRPTaskResult res = new CVRPTaskResult();
             HillClimbingStatistics stats = new HillClimbingStatistics();
 
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             for (int i = 0; i < multistartCount; i++)
             {   
                 if(i < historyCount)
@@ -35,8 +39,8 @@ namespace CVRPlib
                 }
                 
                 Solution solution = _solver.Solve(_data, _targetFunction);
-
                 double solutionFValue = _targetFunction.Evaluate(solution, _data);
+
                 res.Solutions.Add(new SolutionResult() { Solution = solution, FValue = solutionFValue });
                 
                 if (i < historyCount)
@@ -46,8 +50,15 @@ namespace CVRPlib
                 }             
             }
 
-            return res;
-            
+            stopwatch.Stop();
+            var t = stopwatch.Elapsed;
+
+            res.Best = res.Solutions.MinBy(s => s.FValue);
+            res.Worst = res.Solutions.MaxBy(s => s.FValue);
+            res.Solver = _solver.GetType().Name;
+            res.Time = $"{t.Hours}:{t.Minutes}:{t.Seconds}:{t.Milliseconds}";
+
+            return res;         
         }
     }
 }

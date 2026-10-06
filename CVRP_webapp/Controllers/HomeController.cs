@@ -18,7 +18,10 @@ public class HomeController : Controller
     {
         return View();
     }
-
+    public IActionResult Open()
+    {
+        return View();
+    }
     [HttpPost]
     public async Task<IActionResult> Get([FromForm] IFormFile file, [FromForm] int multistartCount, [FromForm] int historyCount)
     {

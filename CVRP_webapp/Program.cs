@@ -21,7 +21,7 @@ namespace CVRP_webapp
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            //app.UseStaticFiles();
+            app.UseStaticFiles();
             app.UseAuthorization();
 
             app.MapStaticAssets();

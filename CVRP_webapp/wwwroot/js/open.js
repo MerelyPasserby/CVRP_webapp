@@ -26,41 +26,10 @@ async function getSolution() {
     return
   }
 
-  const multistartInput = document.querySelector('#multistart_upload')
-  if (!multistartInput) return
-  const multistartCount = Number(multistartInput.value)
-
-  if (!Number.isInteger(multistartCount) || multistartCount <= 0) {
-    console.error('Введи коректну кількість стартів')
-    return
-  }
-
-  const historyInput = document.querySelector('#history_upload')
-  if (!historyInput) return
-  const historyCount = Number(historyInput.value)
-
-  if (!Number.isInteger(historyCount) || historyCount <= 0) {
-    console.error('Введи коректну кількість історій')
-    return
-  }
-
-  const formData = new FormData()
-  formData.append('file', fileInput.files[0])
-  formData.append('multistartCount', multistartCount)
-  formData.append('historyCount', historyCount)
-
   try {
-    const response = await fetch('/Home/Get', {
-      method: 'POST',
-      body: formData,
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error: ${response.status}`)
-    }
-
-    const data = await response.json()
-    console.log(data)
+    const file = fileInput.files[0]
+    const text = await file.text()
+    const data = JSON.parse(text)
 
     drawSolutionInfo(data)
     drawBestSolution(data)
