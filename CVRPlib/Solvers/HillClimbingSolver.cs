@@ -2,6 +2,7 @@
 using CVRPlib.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace CVRPlib.Solvers
@@ -68,16 +69,19 @@ namespace CVRPlib.Solvers
             int j = 0;
             int i = 0;
 
+            int startCarNeeded = (int)((applications.Sum(a => a.Demand) / data.Capacity) + Math.Sqrt(applications.Count));
+            startCarNeeded = Math.Min(startCarNeeded, data.MaxCarCount);
+
             Application depot = applications.Find(a => a.Id == data.DepotId) ?? data.Applications[0];
             shuffled.Remove(depot);
 
-            while (solution.Routes.Count <= data.MaxCarCount)
+            while (solution.Routes.Count < startCarNeeded)
             {
                 solution.Routes.Add(new List<Application>());
                 solution.Routes[i].Add(depot);
                 double currentCapacity = 0;
 
-                while (j < shuffled.Count && currentCapacity + shuffled[j].Demand < data.Capacity)
+                while (j < shuffled.Count && currentCapacity + shuffled[j].Demand < data.Capacity * 0.6)
                 {
                     solution.Routes[i].Add(shuffled[j]);
                     currentCapacity += shuffled[j].Demand;
@@ -96,11 +100,17 @@ namespace CVRPlib.Solvers
             return solution;
         }
         public Solution Solve(InputData data, ITargetFunction targetFunction)
-        {
+        {        
             Solution initial = GenerateInitialSolution(data);
 
             Solution best = Outer(initial, targetFunction, data);
 
+            PostFix(best);
+
+            return best;
+        }
+        static void PostFix(Solution best)
+        {
             for (int i = 0; i < best.Routes.Count; i++)
             {
                 if (best.Routes[i].Count == 2)
@@ -109,13 +119,11 @@ namespace CVRPlib.Solvers
                     i--;
                 }
             }
-
-            return best;
         }
         Solution Outer(Solution initial, ITargetFunction targetFunction, InputData data)
         {
             Improved(new SolutionEventArgs() { ImprovedFValue = targetFunction.Evaluate(initial, data) });
-            var res = HillClimbing(initial, targetFunction, data);
+            var res = HillClimbing(initial, targetFunction, data, mode: 1);
 
             if (res.Routes.Count < 2)
             {
@@ -133,9 +141,8 @@ namespace CVRPlib.Solvers
 
                 for (int r1 = 0; r1 < res.Routes.Count; r1++)
                 {
-                    List<Application> sourceRoute = res.Routes[r1];
                     int firstClientInd = 1;
-                    int lastClientInd = sourceRoute.Count - 2;
+                    int lastClientInd = res.Routes[r1].Count - 2;
 
                     for (int i = firstClientInd; i <= lastClientInd; i++)
                     {
@@ -146,8 +153,7 @@ namespace CVRPlib.Solvers
                                 continue;
                             }
 
-                            List<Application> targetRoute = res.Routes[r2];
-                            int targetLastClientInd = targetRoute.Count - 2;
+                            int targetLastClientInd = res.Routes[r2].Count - 2;
 
                             for (int j = firstClientInd; j <= targetLastClientInd + 1; j++)
                             {
@@ -173,28 +179,34 @@ namespace CVRPlib.Solvers
                         }
                     }
                 }
-
                 if (!found)
                 {
                     Improved(new SolutionEventArgs() { ImprovedFValue = bestFValue });
-                    res = HillClimbing(bestSolution, targetFunction, data);
+                    res = HillClimbing(bestSolution, targetFunction, data, mode: 1);
                 }
             }
-
             return res;
         }
-        Solution HillClimbing(Solution initial, ITargetFunction f, InputData data)
+        Solution HillClimbing(Solution initial, ITargetFunction f, InputData data, int mode = 0)
         {
             Solution res = initial;
             Solution? best;
             List<Solution> neigbors;
+
+            Func<List<Solution>, InputData, ITargetFunction, double, Solution?> func = mode switch
+            {
+                0 => FindBest,
+                1 => FindFirst,
+                2 => FindStochastic,
+                _ => FindBest
+            };
 
             bool found = false;
 
             while (!found)
             {
                 neigbors = GetNeigbourhood(res);
-                best = neigbors.MinBy(s => f.Evaluate(s, data));
+                best = func(neigbors, data, f, f.Evaluate(res, data));
 
                 if (best != null && f.Evaluate(best, data) < f.Evaluate(res, data))
                 {
@@ -208,6 +220,27 @@ namespace CVRPlib.Solvers
             }
 
             return res;
+        }
+        static Solution? FindBest(List<Solution> neigbors, InputData data, ITargetFunction f, double res)
+        {
+            return neigbors.MinBy(s => f.Evaluate(s, data));
+        }
+        static Solution? FindFirst(List<Solution> neigbors, InputData data, ITargetFunction f, double res)
+        {
+            double tmp;
+            for(int i = 0; i < neigbors.Count; i++)
+            {
+                tmp = f.Evaluate(neigbors[i], data);
+                if(tmp < res)
+                {
+                    return neigbors[i];
+                }
+            }
+            return neigbors.Count > 0 ? neigbors[0] : null;
+        }
+        static Solution? FindStochastic(List<Solution> neigbors, InputData data, ITargetFunction f, double res)
+        {
+            return neigbors.Shuffle().Take((int)Math.Sqrt(neigbors.Count)).MinBy(s => f.Evaluate(s, data));
         }
     }
 }
