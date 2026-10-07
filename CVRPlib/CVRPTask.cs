@@ -55,7 +55,6 @@ namespace CVRPlib
 
             res.Best = res.Solutions.MinBy(s => s.FValue);
             res.Worst = res.Solutions.MaxBy(s => s.FValue);
-            res.Solver = _solver.GetType().Name;
             res.Time = $"{t.Hours}:{t.Minutes}:{t.Seconds}:{t.Milliseconds}";
 
             return res;         

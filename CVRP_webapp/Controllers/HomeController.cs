@@ -61,7 +61,7 @@ public class HomeController : Controller
 
             InputData data = dataReader.ParseData(lines);
 
-            var job = new CVRPJob() { InputData = data, MultistartCount = multistartCount, HistoryCount = historyCount, Solver = new HillClimbingSolver().GetType().Name};
+            var job = new CVRPJob() { InputData = data, Parameters = new CVRPJobParameters() { MultistartCount = multistartCount, HistoryCount = historyCount, Solver = new HillClimbingSolver().GetType().Name } };
 
             _jobStore.Add(job);
             await _jobQueue.EnqueueAsync(job.Id);
