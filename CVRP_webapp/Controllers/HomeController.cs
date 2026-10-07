@@ -82,7 +82,7 @@ public class HomeController : Controller
             return NotFound();
         }
 
-        return Ok(new { job.Id, job.JobStatus, job.Result, job.Error });
+        return Ok(job);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

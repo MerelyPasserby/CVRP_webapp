@@ -7,7 +7,7 @@
         public double Capacity { get; init; }
         public List<Application> Applications { get; init; } = new List<Application>();
         public int DepotId { get; init; }
-        public double[,] DistanceMatrix { get; init; } = new double[1,1];
+        public double[][] DistanceMatrix { get; init; } = new double[1][];
     }
 
     public enum DistanceFunction

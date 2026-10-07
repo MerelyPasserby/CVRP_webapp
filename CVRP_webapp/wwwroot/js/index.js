@@ -146,7 +146,6 @@ function drawSolutionInfo(results) {
   const worst = results.worst.fValue
   const difference = worst - best
 
-  document.querySelector('#solver-value').textContent = results.solver
   document.querySelector('#time-value').textContent = results.time
   document.querySelector('#best-value').textContent = best.toFixed(2)
   document.querySelector('#worst-value').textContent = worst.toFixed(2)

@@ -42,7 +42,7 @@ namespace CVRP_webapp.Services
             {
                 var task = new CVRPTask(job.InputData, new HillClimbingSolver(), new TargetFunctionStrict());
 
-                var res = await Task.Run(() => task.GetSolution(job.MultistartCount, job.HistoryCount), cancellationToken);
+                var res = await Task.Run(() => task.GetSolution(job.Parameters.MultistartCount, job.Parameters.HistoryCount), cancellationToken);
 
                 job.Result = res;
                 job.JobStatus = JobStatus.Completed;
