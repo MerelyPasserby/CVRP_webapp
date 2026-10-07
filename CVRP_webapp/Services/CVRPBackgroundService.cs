@@ -1,4 +1,5 @@
 ﻿using CVRPlib;
+using CVRPlib.Interfaces;
 using CVRPlib.Models;
 using CVRPlib.Solvers;
 using System.Diagnostics;
@@ -40,7 +41,13 @@ namespace CVRP_webapp.Services
 
             try
             {
-                var task = new CVRPTask(job.InputData, new HillClimbingSolver(), new TargetFunctionStrict());
+                ISolver algo = job.Parameters.Solver switch
+                {
+                    "HillClimbingSolver" => new HillClimbingSolver(),
+                    _ => new HillClimbingSolver()
+                };
+
+                var task = new CVRPTask(job.InputData, algo, new TargetFunctionStrict());
 
                 var res = await Task.Run(() => task.GetSolution(job.Parameters.MultistartCount, job.Parameters.HistoryCount), cancellationToken);
 

@@ -31,7 +31,7 @@ public class HomeController : Controller
         return View();
     }
     [HttpPost]
-    public async Task<IActionResult> Start([FromForm] IFormFile file, [FromForm] int multistartCount, [FromForm] int historyCount)
+    public async Task<IActionResult> Start([FromForm] IFormFile file, [FromForm] int multistartCount, [FromForm] int historyCount, [FromForm] string solver)
     {
         if(file == null || file.Length == 0)
         {
@@ -61,7 +61,13 @@ public class HomeController : Controller
 
             InputData data = dataReader.ParseData(lines);
 
-            var job = new CVRPJob() { InputData = data, Parameters = new CVRPJobParameters() { MultistartCount = multistartCount, HistoryCount = historyCount, Solver = new HillClimbingSolver().GetType().Name } };
+            ISolver algo = solver switch
+            {
+                "hillClimbing" => new HillClimbingSolver(),
+                _ => new HillClimbingSolver()
+            };
+
+            var job = new CVRPJob() { InputData = data, Parameters = new CVRPJobParameters() { MultistartCount = multistartCount, HistoryCount = historyCount, Solver = algo.GetType().Name } };
 
             _jobStore.Add(job);
             await _jobQueue.EnqueueAsync(job.Id);

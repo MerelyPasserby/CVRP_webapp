@@ -73,10 +73,15 @@ async function getSolution() {
     return
   }
 
+  const solverInput = document.querySelector('#solver_upload')
+  if (!solverInput) return
+  const solver = solverInput.value
+
   const formData = new FormData()
   formData.append('file', fileInput.files[0])
   formData.append('multistartCount', multistartCount)
   formData.append('historyCount', historyCount)
+  formData.append('solver', solver)
 
   try {
     const response = await fetch('/Home/Start', {
