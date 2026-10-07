@@ -53,7 +53,7 @@ namespace CVRPlib.DataReaders
                         {
                             parts = input[i].Trim().Split(' ');
 
-                            points.Add(new() { Id = Convert.ToInt32(parts[0]), Point = new() { X = Convert.ToDouble(parts[1]), Y = Convert.ToDouble(parts[2]) } });
+                            points.Add(new() { Id = Convert.ToInt32(parts[0]) - 1, Point = new() { X = Convert.ToDouble(parts[1]), Y = Convert.ToDouble(parts[2]) } });
 
                             i++;
                         }                
@@ -74,7 +74,7 @@ namespace CVRPlib.DataReaders
                         break;
                     case "DEPOT_SECTION":
                         i++;
-                        depotId = Convert.ToInt32(input[i].Trim());
+                        depotId = Convert.ToInt32(input[i].Trim()) - 1;
                         i += 2;
                         break;
                     default:

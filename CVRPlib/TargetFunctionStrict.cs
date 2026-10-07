@@ -35,10 +35,10 @@ namespace CVRPlib
                     int startAppId = route[i].Id;
                     int endAppId = route[i + 1].Id;
 
-                    int startPos = data.Applications.FindIndex(app => app.Id == startAppId);
-                    int endPos = data.Applications.FindIndex(app => app.Id == endAppId);
+                    //int startPos = data.Applications.FindIndex(app => app.Id == startAppId);
+                    //int endPos = data.Applications.FindIndex(app => app.Id == endAppId);
 
-                    target += data.DistanceMatrix[startPos, endPos];
+                    target += data.DistanceMatrix[startAppId, endAppId/*startPos, endPos*/];
                 }
                 
             }

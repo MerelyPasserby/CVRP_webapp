@@ -6,6 +6,9 @@
 #ToDo
 ToDo.txt
 
+#Diag
+*.diagsession
+
 # User-specific files
 *.rsuser
 *.suo
