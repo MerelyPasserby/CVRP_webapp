@@ -93,12 +93,13 @@ namespace CVRPlib.DataReaders
 
             int appsCount = applications.Count;
 
-            double[,] m = new double[appsCount, appsCount];
+            double[][] m = new double[appsCount][];
             for(int j = 0; j < appsCount; j++)
             {
+                m[j] = new double[appsCount];
                 for(int k = 0; k < appsCount; k++)
                 {
-                    m[j, k] = d.EvaluateDistance(applications[j].Point, applications[k].Point);
+                    m[j][k] = d.EvaluateDistance(applications[j].Point, applications[k].Point);
                 }
             }
 

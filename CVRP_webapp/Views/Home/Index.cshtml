@@ -6,12 +6,26 @@
     <div class="vertical block">
         <label>Add file<input type="file" id="file_upload" /></label>          
         <label>Multistart count <input type="text" id="multistart_upload" value="50"/></label>      
-        <label>History count <input type="text" id="history_upload" value="3"/></label>      
+        <label>History count <input type="text" id="history_upload" value="3"/></label>     
+        <label> Solver
+            <select id="solver_upload">
+                <option value="hillClimbing">Hill Climbing</option>
+            </select>
+        </label>
         <input type="button" value="Send" id="upload_button"/>
     </div>
     
+    <div class="vertical block">
+        <div class="block">
+            <label>Job ID <input type="text" id="job-id" /></label>
+            <input type="button" value="Copy" id="copy_button"/>
+            <input type="button" value="Clear" id="clear_button"/>
+        </div>      
+        <input type="button" value="Check" id="check_button"/>    
+    </div>
+
     <div class="block" id="info">
-        <p>Solver: <span id="solver-value">—</span></p>
+        <p>Status: <span id="status-value">—</span></p>
         <p>Time: <span id="time-value">—</span></p>
         <p>Best: <span id="best-value">—</span></p>
         <p>Worst: <span id="worst-value">—</span></p>

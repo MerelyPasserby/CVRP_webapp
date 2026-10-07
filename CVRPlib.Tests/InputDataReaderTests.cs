@@ -21,7 +21,7 @@ namespace CVRPlib.Tests
             //Assert
             Assert.That(data, Is.Not.Null);
             Assert.That(data.DistanceMatrix, Is.Not.Null);
-            Assert.That(data.DistanceMatrix[0,0], Is.EqualTo(0));
+            Assert.That(data.DistanceMatrix[0][0], Is.EqualTo(0));
             Assert.That(data.MaxCarCount, Is.EqualTo(12));
         }
     }

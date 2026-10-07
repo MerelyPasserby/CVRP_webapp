@@ -31,11 +31,10 @@ async function getSolution() {
     const text = await file.text()
     const data = JSON.parse(text)
 
-    drawSolutionInfo(data)
-    drawBestSolution(data)
-    saveResults(data)
-    drawGistogram(data)
-    drawConvergence(data)
+    drawSolutionInfo(data.result)
+    drawBestSolution(data.result)
+    drawGistogram(data.result)
+    drawConvergence(data.result)
   } catch (error) {
     console.error('Помилка:', error)
   }
@@ -46,7 +45,6 @@ function drawSolutionInfo(results) {
   const worst = results.worst.fValue
   const difference = worst - best
 
-  document.querySelector('#solver-value').textContent = results.solver
   document.querySelector('#time-value').textContent = results.time
   document.querySelector('#best-value').textContent = best.toFixed(2)
   document.querySelector('#worst-value').textContent = worst.toFixed(2)
@@ -115,36 +113,6 @@ function drawBestSolution(results) {
       },
     },
   })
-}
-
-function saveResults(results) {
-  const button = document.querySelector('#save_button')
-  if (!button) return
-  button.disabled = false
-
-  button.onclick = () => {
-    const json = JSON.stringify(results, null, 2)
-
-    const blob = new Blob([json], {
-      type: 'application/json',
-    })
-
-    const url = URL.createObjectURL(blob)
-
-    const link = document.createElement('a')
-    link.href = url
-
-    const now = new Date()
-    const timestamp =
-      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}_` +
-      `${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`
-
-    link.download = `best-solution-${timestamp}.json`
-
-    link.click()
-
-    URL.revokeObjectURL(url)
-  }
 }
 
 let qualityChart = null

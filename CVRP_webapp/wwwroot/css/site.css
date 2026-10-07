@@ -30,6 +30,10 @@ p {
   margin-bottom: 0px;
 }
 
+#job-id {
+  width: 300px;
+}
+
 .centered {
   display: flex;
   justify-content: center;
@@ -61,7 +65,8 @@ p {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-input {
+input,
+select {
   margin: 10px;
 }
 

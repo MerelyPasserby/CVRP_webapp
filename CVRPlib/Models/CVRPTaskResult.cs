@@ -8,7 +8,6 @@ namespace CVRPlib.Models
     public class CVRPTaskResult
 #pragma warning restore S101
     {
-        public string Solver { get; set; } = "";
         public string Time { get; set; } = "";
         public List<SolutionResult> Solutions { get; set; } = new List<SolutionResult>();
         public SolutionResult Best { get; set; } = new SolutionResult();

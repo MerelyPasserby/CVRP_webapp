@@ -9,11 +9,19 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using CVRPlib.Interfaces;
 using CVRPlib.DataReaders;
 using CVRPlib.Solvers;
+using CVRP_webapp.Services;
 
 namespace CVRP_webapp.Controllers;
 
 public class HomeController : Controller
 {
+    readonly CVRPJobStore _jobStore;
+    readonly CVRPJobQueue _jobQueue;
+    public HomeController(CVRPJobStore jobStore, CVRPJobQueue jobQueue)
+    {
+        _jobStore = jobStore;
+        _jobQueue = jobQueue;
+    }
     public IActionResult Index()
     {
         return View();
@@ -23,7 +31,7 @@ public class HomeController : Controller
         return View();
     }
     [HttpPost]
-    public async Task<IActionResult> Get([FromForm] IFormFile file, [FromForm] int multistartCount, [FromForm] int historyCount)
+    public async Task<IActionResult> Start([FromForm] IFormFile file, [FromForm] int multistartCount, [FromForm] int historyCount, [FromForm] string solver)
     {
         if(file == null || file.Length == 0)
         {
@@ -53,14 +61,34 @@ public class HomeController : Controller
 
             InputData data = dataReader.ParseData(lines);
 
-            var task = new CVRPTask(data, new HillClimbingSolver(), new TargetFunctionStrict());
-            var res = await Task.Run(() => task.GetSolution(multistartCount, historyCount));
-            return Ok(res);
+            ISolver algo = solver switch
+            {
+                "hillClimbing" => new HillClimbingSolver(),
+                _ => new HillClimbingSolver()
+            };
+
+            var job = new CVRPJob() { InputData = data, Parameters = new CVRPJobParameters() { MultistartCount = multistartCount, HistoryCount = historyCount, Solver = algo.GetType().Name } };
+
+            _jobStore.Add(job);
+            await _jobQueue.EnqueueAsync(job.Id);
+
+            return Ok(new { jobId =  job.Id });          
         }
         catch(Exception ex)
         {
             return BadRequest(ex.Message);
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Status([FromQuery] Guid guid)
+    {
+        if(!_jobStore.TryGetValue(guid, out var job))
+        {
+            return NotFound();
+        }
+
+        return Ok(job);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

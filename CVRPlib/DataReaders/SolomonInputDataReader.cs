@@ -47,13 +47,14 @@ namespace CVRPlib.DataReaders
             DistanceFunction distanceFunction = DistanceFunction.EUC_2D;
             IDistanceFunction d = new Euclid2DDistanceFunction();
 
-            double[,] m = new double[apps.Count, apps.Count];
+            double[][] m = new double[apps.Count][];
 
             for (int j = 0; j < apps.Count; j++)
             {
+                m[j] = new double[apps.Count];
                 for(int k = 0; k < apps.Count; k++)
                 {
-                    m[j, k] = d.EvaluateDistance(apps[j].Point, apps[k].Point);
+                    m[j][k] = d.EvaluateDistance(apps[j].Point, apps[k].Point);
                 }
             }
 
