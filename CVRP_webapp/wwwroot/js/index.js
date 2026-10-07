@@ -135,7 +135,7 @@ async function getStatus() {
 
       drawSolutionInfo(data.result)
       drawBestSolution(data.result)
-      saveResults(data.result)
+      saveResults(data)
       drawGistogram(data.result)
       drawConvergence(data.result)
     } else if (data.jobStatus === 3) {
@@ -227,7 +227,15 @@ function saveResults(results) {
   button.disabled = false
 
   button.onclick = () => {
-    const json = JSON.stringify(results, null, 2)
+    const json = JSON.stringify(
+      {
+        inputData: results.inputData,
+        parameters: results.parameters,
+        result: results.result,
+      },
+      null,
+      2,
+    )
 
     const blob = new Blob([json], {
       type: 'application/json',

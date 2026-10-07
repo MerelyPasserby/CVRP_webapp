@@ -35,7 +35,7 @@ namespace CVRP_webapp.Services
             }
         }
 
-        async Task ProcessJob(CVRPJob job, CancellationToken cancellationToken)
+        static async Task ProcessJob(CVRPJob job, CancellationToken cancellationToken)
         {
             job.JobStatus = JobStatus.Running;
 
