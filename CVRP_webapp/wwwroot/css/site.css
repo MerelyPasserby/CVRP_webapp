@@ -30,6 +30,10 @@ p {
   margin-bottom: 0px;
 }
 
+#job-id {
+  width: 300px;
+}
+
 .centered {
   display: flex;
   justify-content: center;

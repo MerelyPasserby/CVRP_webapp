@@ -1,6 +1,9 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
   fileInputinit()
   fileUploadinit()
+  getJobinit()
+  clearButtoninit()
+  copyButtoninit()
 })
 
 function fileInputinit() {
@@ -16,6 +19,32 @@ function fileUploadinit() {
   const button = document.querySelector('#upload_button')
   if (!button) return
   button.addEventListener('click', getSolution)
+}
+
+function getJobinit() {
+  const button = document.querySelector('#check_button')
+  if (!button) return
+  button.addEventListener('click', getStatus)
+}
+
+function clearButtoninit() {
+  const button = document.querySelector('#clear_button')
+  if (!button) return
+  button.addEventListener('click', () => {
+    document.querySelector('#job-id').value = ''
+  })
+}
+
+function copyButtoninit() {
+  const button = document.querySelector('#copy_button')
+  if (!button) return
+  button.addEventListener('click', async () => {
+    const input = document.querySelector('#job-id')
+
+    if (!input.value) return
+
+    await navigator.clipboard.writeText(input.value)
+  })
 }
 
 async function getSolution() {
@@ -50,7 +79,7 @@ async function getSolution() {
   formData.append('historyCount', historyCount)
 
   try {
-    const response = await fetch('/Home/Get', {
+    const response = await fetch('/Home/Start', {
       method: 'POST',
       body: formData,
     })
@@ -62,11 +91,51 @@ async function getSolution() {
     const data = await response.json()
     console.log(data)
 
-    drawSolutionInfo(data)
-    drawBestSolution(data)
-    saveResults(data)
-    drawGistogram(data)
-    drawConvergence(data)
+    const jobIdInput = document.querySelector('#job-id')
+    if (!jobIdInput) return
+    jobIdInput.value = data.jobId
+  } catch (error) {
+    console.error('Помилка:', error)
+  }
+}
+
+async function getStatus() {
+  const jobIdInput = document.querySelector('#job-id')
+  if (!jobIdInput) return
+
+  const id = jobIdInput.value
+
+  if (!id) {
+    return
+  }
+
+  try {
+    const response = await fetch(`/Home/Status?guid=${encodeURIComponent(id)}`)
+
+    const statusInfo = document.querySelector('#status-value')
+
+    if (response.status === 404) {
+      statusInfo.textContent = 'Task Not Found'
+      return
+    }
+
+    const data = await response.json()
+
+    if (data.jobStatus === 0) {
+      statusInfo.textContent = 'Task is Waiting'
+    } else if (data.jobStatus === 1) {
+      statusInfo.textContent = 'Task is Running'
+    } else if (data.jobStatus === 2) {
+      statusInfo.textContent = 'Task Completed'
+
+      drawSolutionInfo(data.result)
+      drawBestSolution(data.result)
+      saveResults(data.result)
+      drawGistogram(data.result)
+      drawConvergence(data.result)
+    } else if (data.jobStatus === 3) {
+      statusInfo.textContent = `Task Failed. Error = ${data.error}`
+    }
   } catch (error) {
     console.error('Помилка:', error)
   }
