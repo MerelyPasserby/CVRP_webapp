@@ -36,7 +36,12 @@ namespace CVRPlib.DataReaders
                             break;
                         }
                         string value = parts[ind + 1].Trim('.', ',', ';');
-                        maxCarCount = (Convert.ToInt32(value) + 1) * 2;
+                        if(!int.TryParse(value, out maxCarCount))
+                        {
+                            maxCarCount = int.MaxValue;
+                            break;
+                        }
+                        maxCarCount = (maxCarCount + 1) * 2;
                         i++;
                         break;                    
                     case "EDGE_WEIGHT_TYPE":

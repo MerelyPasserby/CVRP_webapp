@@ -133,6 +133,7 @@ async function getStatus() {
     } else if (data.jobStatus === 2) {
       statusInfo.textContent = 'Task Completed'
 
+      console.log(data)
       drawSolutionInfo(data.result)
       drawBestSolution(data.result)
       saveResults(data)
