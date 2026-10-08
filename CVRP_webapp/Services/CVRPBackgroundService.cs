@@ -13,11 +13,13 @@ namespace CVRP_webapp.Services
     {
         readonly CVRPJobStore _jobStore;
         readonly CVRPJobQueue _jobQueue;
+        readonly JsonJobStorage _jobStorage;
 
-        public CVRPBackgroundService(CVRPJobStore jobStore, CVRPJobQueue jobQueue)
+        public CVRPBackgroundService(CVRPJobStore jobStore, CVRPJobQueue jobQueue, JsonJobStorage jobStorage)
         {
             _jobQueue = jobQueue;
             _jobStore = jobStore;
+            _jobStorage = jobStorage;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,9 +37,10 @@ namespace CVRP_webapp.Services
             }
         }
 
-        static async Task ProcessJob(CVRPJob job, CancellationToken cancellationToken)
+        async Task ProcessJob(CVRPJob job, CancellationToken cancellationToken)
         {
             job.JobStatus = JobStatus.Running;
+            await _jobStorage.SaveAsync(job);
 
             try
             {
@@ -53,11 +56,13 @@ namespace CVRP_webapp.Services
 
                 job.Result = res;
                 job.JobStatus = JobStatus.Completed;
+                await _jobStorage.SaveAsync(job);
             }
             catch(Exception ex)
             {
                 job.Error = ex.Message;
                 job.JobStatus = JobStatus.Failed;
+                await _jobStorage.SaveAsync(job);
             }
         }
     }

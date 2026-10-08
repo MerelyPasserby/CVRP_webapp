@@ -30,6 +30,11 @@ namespace CVRPlib.DataReaders
                 {            
                     case "COMMENT":
                         int ind = parts.ToList().FindIndex(part => part.Contains("trucks:"));
+                        if(ind == -1)
+                        {
+                            maxCarCount = int.MaxValue;
+                            break;
+                        }
                         string value = parts[ind + 1].Trim('.', ',', ';');
                         maxCarCount = (Convert.ToInt32(value) + 1) * 2;
                         i++;
