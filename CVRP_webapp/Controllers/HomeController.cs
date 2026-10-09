@@ -10,6 +10,7 @@ using CVRPlib.Interfaces;
 using CVRPlib.DataReaders;
 using CVRPlib.Solvers;
 using CVRP_webapp.Services;
+using CVRP_webapp.Interfaces;
 
 namespace CVRP_webapp.Controllers;
 
@@ -17,10 +18,12 @@ public class HomeController : Controller
 {
     readonly CVRPJobStore _jobStore;
     readonly CVRPJobQueue _jobQueue;
-    public HomeController(CVRPJobStore jobStore, CVRPJobQueue jobQueue)
+    readonly JsonJobStorage _jobStorage;
+    public HomeController(CVRPJobStore jobStore, CVRPJobQueue jobQueue, JsonJobStorage jobStorage)
     {
         _jobStore = jobStore;
         _jobQueue = jobQueue;
+        _jobStorage = jobStorage;
     }
     public IActionResult Index()
     {
@@ -69,6 +72,8 @@ public class HomeController : Controller
 
             var job = new CVRPJob() { InputData = data, Parameters = new CVRPJobParameters() { MultistartCount = multistartCount, HistoryCount = historyCount, Solver = algo.GetType().Name } };
 
+            await _jobStorage.SaveAsync(job); 
+
             _jobStore.Add(job);
             await _jobQueue.EnqueueAsync(job.Id);
 
@@ -83,9 +88,16 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> Status([FromQuery] Guid guid)
     {
-        if(!_jobStore.TryGetValue(guid, out var job))
+        if (!_jobStore.TryGetValue(guid, out var job))
         {
-            return NotFound();
+            job = await _jobStorage.GetAsync(guid);
+
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+            _jobStore.Add(job);
         }
 
         return Ok(job);

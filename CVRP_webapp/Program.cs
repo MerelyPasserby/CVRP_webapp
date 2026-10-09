@@ -11,6 +11,7 @@ namespace CVRP_webapp
             builder.Services.AddSingleton<CVRPJobStore>();
             builder.Services.AddSingleton<CVRPJobQueue>();
             builder.Services.AddHostedService<CVRPBackgroundService>();
+            builder.Services.AddSingleton<JsonJobStorage>();
 
             var app = builder.Build();
 

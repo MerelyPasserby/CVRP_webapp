@@ -69,8 +69,15 @@ namespace CVRPlib.Solvers
             int j = 0;
             int i = 0;
 
-            int startCarNeeded = (int)((applications.Sum(a => a.Demand) / data.Capacity) + Math.Sqrt(applications.Count));
+            int startCarNeeded = (int)(applications.Sum(a => a.Demand) / data.Capacity);
+            int addon = (int)Math.Sqrt(applications.Count);
+            //int addon = (int)(startCarNeeded * 0.2) < 5 ? 5 : (int)(startCarNeeded * 0.2);
+            startCarNeeded += addon;
             startCarNeeded = Math.Min(startCarNeeded, data.MaxCarCount);
+
+            double fullness = Math.Min(applications.Max(a => a.Demand) / data.Capacity + 0.1, 1);
+            fullness = Math.Max(fullness, 0.75);
+            double carInitialFullness = data.Capacity * fullness;
 
             Application depot = applications.Find(a => a.Id == data.DepotId) ?? data.Applications[0];
             shuffled.Remove(depot);
@@ -81,7 +88,7 @@ namespace CVRPlib.Solvers
                 solution.Routes[i].Add(depot);
                 double currentCapacity = 0;
 
-                while (j < shuffled.Count && currentCapacity + shuffled[j].Demand < data.Capacity * 0.6)
+                while (j < shuffled.Count && currentCapacity + shuffled[j].Demand < carInitialFullness)
                 {
                     solution.Routes[i].Add(shuffled[j]);
                     currentCapacity += shuffled[j].Demand;
@@ -92,7 +99,7 @@ namespace CVRPlib.Solvers
                 i++;
             }
 
-            if (solution.Routes.Count > data.MaxCarCount && shuffled.Count > j)
+            if (solution.Routes.Count > data.MaxCarCount || shuffled.Count != j)
             {
                 solution = GenerateInitialSolution(data);
             }

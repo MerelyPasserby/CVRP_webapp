@@ -11,17 +11,18 @@ namespace CVRPlib
         public double Evaluate(Solution solution, InputData data)
         {
             double capacity = 0.0;
-            double penalty = 0.0;
+            //double penalty = 0.0;
 
-            foreach(var route in solution.Routes)
+            foreach (var route in solution.Routes)
             {
                 for(int i = 0; i < route.Count; i++)
                 {
                     capacity += route[i].Demand;
                     if (capacity > data.Capacity)
                     {
-                        penalty += (capacity - data.Capacity) * 1000;
-                    }
+                        //penalty += (capacity - data.Capacity) * 10_000;
+                        return double.MaxValue;
+                    }             
                 }
                 capacity = 0;
             }
@@ -37,10 +38,10 @@ namespace CVRPlib
 
                     target += data.DistanceMatrix[startAppId][endAppId];
                 }
-                
+
             }
-            
-            return target + penalty;
+
+            return target/*+ penalty*/;
         }
     }
 }

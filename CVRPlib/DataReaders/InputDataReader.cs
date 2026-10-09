@@ -30,8 +30,18 @@ namespace CVRPlib.DataReaders
                 {            
                     case "COMMENT":
                         int ind = parts.ToList().FindIndex(part => part.Contains("trucks:"));
+                        if(ind == -1)
+                        {
+                            maxCarCount = int.MaxValue;
+                            break;
+                        }
                         string value = parts[ind + 1].Trim('.', ',', ';');
-                        maxCarCount = (Convert.ToInt32(value) + 1) * 2;
+                        if(!int.TryParse(value, out maxCarCount))
+                        {
+                            maxCarCount = int.MaxValue;
+                            break;
+                        }
+                        maxCarCount = (maxCarCount + 1) * 2;
                         i++;
                         break;                    
                     case "EDGE_WEIGHT_TYPE":
