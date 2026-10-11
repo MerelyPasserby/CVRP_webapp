@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Compare";
+}
+
+<div class="centered">
+
+    <div class="vertical">
+    <div class="vertical block">
+        <label>Add file<input type="file" id="file_upload" /></label>
+        <input type="button" value="Open" id="upload_button" />
+    </div>
+
+    <div class="block" id="info">
+        <p>Time: <span id="time-value">—</span></p>
+        <p>Best: <span id="best-value">—</span></p>
+        <p>Worst: <span id="worst-value">—</span></p>
+        <p>Difference: <span id="difference-value">—</span></p>
+    </div>
+
+    <div class="map-container-2 block" id="graph">
+        <canvas id="solution-chart"></canvas>
+    </div>
+
+    <div class="map-container-2 block" id="gist">
+        <canvas id="quality-chart"></canvas>
+    </div>
+
+    <div class="map-container-2 block" id="convergence">
+        <canvas id="convergence-chart"></canvas>
+    </div>
+    </div>
+
+
+    <div class="vertical">
+    <div class="vertical block">
+        <label>Add file<input type="file" id="file_upload2" /></label>
+        <input type="button" value="Open" id="upload_button2" />
+    </div>
+
+    <div class="block" id="info2">
+        <p>Time: <span id="time-value2">—</span></p>
+        <p>Best: <span id="best-value2">—</span></p>
+        <p>Worst: <span id="worst-value2">—</span></p>
+        <p>Difference: <span id="difference-value2">—</span></p>
+    </div>
+
+    <div class="map-container-2 block" id="graph2">
+        <canvas id="solution-chart2"></canvas>
+    </div>
+
+    <div class="map-container-2 block" id="gist2">
+        <canvas id="quality-chart2"></canvas>
+    </div>
+
+    <div class="map-container-2 block" id="convergence2">
+        <canvas id="convergence-chart2"></canvas>
+    </div>
+    </div>
+
+</div>
+    
+    
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="module" src="~/js/compare.js" asp-append-version="true"></script>
+}

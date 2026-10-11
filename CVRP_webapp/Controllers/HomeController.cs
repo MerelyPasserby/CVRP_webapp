@@ -33,6 +33,10 @@ public class HomeController : Controller
     {
         return View();
     }
+    public IActionResult Compare()
+    {
+        return View();
+    }
     [HttpPost]
     public async Task<IActionResult> Start([FromForm] IFormFile file, [FromForm] int multistartCount, [FromForm] int historyCount, [FromForm] string solver)
     {
