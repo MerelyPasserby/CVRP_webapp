@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CVRPlib.Interfaces
 {
-    internal abstract class LocalSearchSolver : ISolver
+    public abstract class LocalSearchSolver : ISolver
     {
         public event EventHandler<SolutionEventArgs>? OnSolutionImpoved;
         protected void Improved(SolutionEventArgs e) => OnSolutionImpoved?.Invoke(this, e);
@@ -19,11 +19,15 @@ namespace CVRPlib.Interfaces
             int i = 0;
 
             int startCarNeeded = (int)(applications.Sum(a => a.Demand) / data.Capacity);
+
+            //can experiment
             int addon = (int)Math.Sqrt(applications.Count);
             //int addon = (int)(startCarNeeded * 0.2) < 5 ? 5 : (int)(startCarNeeded * 0.2);
+
             startCarNeeded += addon;
             startCarNeeded = Math.Min(startCarNeeded, data.MaxCarCount);
 
+            //can experiment
             double fullness = Math.Min(applications.Max(a => a.Demand) / data.Capacity + 0.1, 1);
             fullness = Math.Max(fullness, 0.75);
             double carInitialFullness = data.Capacity * fullness;

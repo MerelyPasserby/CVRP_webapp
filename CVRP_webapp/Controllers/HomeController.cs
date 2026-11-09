@@ -71,7 +71,8 @@ public class HomeController : Controller
             ISolver algo = solver switch
             {
                 "hillClimbing" => new HillClimbingSolver(),
-                _ => new HillClimbingSolver()
+                "tabuSearch" => new TabuSearchSolver(),
+                _ => new TabuSearchSolver()
             };
 
             var job = new CVRPJob() { InputData = data, Parameters = new CVRPJobParameters() { MultistartCount = multistartCount, HistoryCount = historyCount, Solver = algo.GetType().Name } };
