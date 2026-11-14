@@ -64,7 +64,7 @@ namespace CVRPlib.Solvers
             InitMemory(data.Applications.Count);
 
             //can experiment
-            int iter = 99;
+            int iter = 50;
             int a = 50;
 
             bool found = false;
@@ -72,21 +72,23 @@ namespace CVRPlib.Solvers
             do
             {
                 neigbors = NeigbourhoodGenerator.GetNeigbourhoodTabu(res);
-
+                double bestF = f.Evaluate(best, data);
+                double neigbF;
                 foreach (var neigbour in neigbors)
                 {
+                    neigbF = f.Evaluate(neigbour.s, data);
                     if (shortMemory[neigbour.edges.fb, neigbour.edges.f] == 0 && shortMemory[neigbour.edges.l, neigbour.edges.la] == 0)
                     {
-                        values.Add((neigbour, f.Evaluate(neigbour.s, data) + a * (longMemory[neigbour.edges.fb, neigbour.edges.f] + longMemory[neigbour.edges.l, neigbour.edges.la])));
+                        values.Add((neigbour, neigbF + a * (longMemory[neigbour.edges.fb, neigbour.edges.f] + longMemory[neigbour.edges.l, neigbour.edges.la])));
                     }
                     else
-                    {
-                        if(f.Evaluate(neigbour.s, data) < f.Evaluate(best, data))
+                    {                  
+                        if (neigbF < bestF)
                         {
                             res = neigbour;
                             best = neigbour.s;
                             found = true;
-                            Improved(new SolutionEventArgs() { ImprovedFValue = f.Evaluate(res.s, data) });
+                            Improved(new SolutionEventArgs() { ImprovedFValue = neigbF});
                             break;
                         }
                     }
@@ -95,9 +97,10 @@ namespace CVRPlib.Solvers
                 if (!found)
                 {
                     res = values.MinBy(s => s.value).sol;
-                    Improved(new SolutionEventArgs() { ImprovedFValue = f.Evaluate(res.s, data)});
+                    double resF = f.Evaluate(res.s, data);
+                    Improved(new SolutionEventArgs() { ImprovedFValue = resF});
 
-                    if (f.Evaluate(res.s, data) < f.Evaluate(best, data))
+                    if (resF < bestF)
                     {
                         best = res.s;
                     }                
@@ -121,7 +124,7 @@ namespace CVRPlib.Solvers
                 }
 
                 //Can experiment
-                if (iter % 50 == 0) 
+                if (iter % 25 == 0) 
                 {
                     ResetMemory();
                 }
