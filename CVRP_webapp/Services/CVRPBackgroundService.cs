@@ -47,7 +47,8 @@ namespace CVRP_webapp.Services
                 ISolver algo = job.Parameters.Solver switch
                 {
                     "HillClimbingSolver" => new HillClimbingSolver(),
-                    _ => new HillClimbingSolver()
+                    "TabuSearchSolver" => new TabuSearchSolver(),
+                    _ => new TabuSearchSolver()
                 };
 
                 var task = new CVRPTask(job.InputData, algo, new TargetFunctionStrict());

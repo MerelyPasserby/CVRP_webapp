@@ -8,9 +8,6 @@ namespace CVRPlib
 {
     public class Euclid2DDistanceFunction : IDistanceFunction
     {
-        public double EvaluateDistance(Point a, Point b)
-        {
-            return Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
-        }
+        public double EvaluateDistance(Point a, Point b) => Math.Sqrt(Math.Pow(a.X - b.X, 2) + Math.Pow(a.Y - b.Y, 2));
     }
 }
